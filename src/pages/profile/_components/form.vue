@@ -43,6 +43,7 @@ import TextField from "../../../components/input/TextField.vue";
 import { constants } from "../_constants";
 import { create, setItemId, alreadyExist } from "../../../storage/create";
 import { getItemById } from "../../../storage/read";
+import { update } from "../../../storage/update";
 
 export default {
   name: "perfisForm",
@@ -69,7 +70,7 @@ export default {
       if (!this.formValidated) {
         return false;
       }
-      if (alreadyExist("perfis", this.form.nome)) {
+      if (alreadyExist("perfis", this.form.nome) && !this.$route.params.id) {
         Swal.message(
           this.$strings.atencao,
           this.$strings.msg_nome_existente,
@@ -77,12 +78,22 @@ export default {
         );
         return;
       }
-      this.form.id = setItemId("perfis");
+      if (this.$route.params.id && !alreadyExist("perfis", this.form.nome)) {
+        this.form.id = Number(this.$route.params.id);
+        
+        const response = update("perfis", this.form);
+        if (response.status == 200) {
+          this.$router.push({ name: "perfis" });
+          Swal.messageToast(this.$strings.msg_alterar, "success");
+        }
+      } else {
+        this.form.id = setItemId("perfis");
 
-      const response = create("perfis", this.form);
-      if (response.status == 201) {
-        this.$router.push({ name: "perfis" });
-        Swal.messageToast(this.$strings.msg_adicionar, "success");
+        const response = create("perfis", this.form);
+        if (response.status == 201) {
+          this.$router.push({ name: "perfis" });
+          Swal.messageToast(this.$strings.msg_adicionar, "success");
+        }
       }
     },
   },

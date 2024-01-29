@@ -32,6 +32,12 @@
             :tooltipName="'Editar'"
             :btnColor="$colors.icon_edit"
           />
+          <IconButton
+            :onClick="() => deleteItemTable(item)"
+            :name="'mdi-delete-outline'"
+            :tooltipName="'Excluir'"
+            :btnColor="'error'"
+          />
         </template>
       </DataTable>
     </v-card>
@@ -46,6 +52,7 @@ import IconButton from "../../components/ui/IconButton.vue";
 import AddButton from "../../components/ui/AddButton.vue";
 import { constants } from "./_constants";
 import { getItem } from "../../storage/read";
+import { deleteItem } from "../../storage/delete";
 
 export default {
   components: {
@@ -65,13 +72,31 @@ export default {
   },
   beforeCreate() {},
   mounted() {
-    this.items = getItem("perfis");
+    this.search()
   },
   computed: {},
   methods: {
+    search() {
+      this.items = getItem("perfis");
+    },
     navigateToEdit(item) {
       return this.$router.push({
         path: this.$router.currentRoute.path + `/editar/${item.id}`,
+      });
+    },
+    async deleteItemTable(item) {
+      Swal.deleteMessage(
+        "Deseja excluir o perfil ",
+        `${item.nome}`
+      ).then(async (result) => {
+        if (result.isConfirmed) {
+          const resp = deleteItem("perfis", item.id);
+          if(resp.status == 200) {
+            this.search();
+            Swal.messageToast(this.$strings.msg_excluir);
+          }
+          if (!resp) return false;
+        }
       });
     },
   },

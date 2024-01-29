@@ -8,6 +8,7 @@ const Strings = {
     //mensagens do swall
     msg_adicionar: "Adicionado com sucesso",
     msg_alterar: "Alterado com sucesso",
+    msg_excluir: "Excluído com sucesso",
 
     //Form
     atencao: "Atenção!",
