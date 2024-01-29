@@ -5,8 +5,14 @@ import router from "./router";
 
 import store from "./store";
 
+import Strings from "./utils/strings";
+import Colors from "./utils/colors";
+
 
 Vue.config.productionTip = false;
+
+Vue.prototype.$strings = Strings;
+Vue.prototype.$colors = Colors;
 
 new Vue({
     vuetify,

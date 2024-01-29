@@ -1,14 +1,18 @@
 import Vue from "vue";
 import Router from "vue-router";
+import crudRoutes from "./crud.routes";
 
 Vue.use(Router);
 
-export const routes = [{
-    path: "/",
-    name: "home",
-    component: () =>
-        import ("../App.vue"),
-}, ];
+export const routes = [
+    ...crudRoutes,
+    {
+        path: "/",
+        name: "home",
+        component: () =>
+            import ("@/pages/home"),
+    },
+];
 
 const router = new Router({
     mode: "history",
@@ -18,5 +22,4 @@ const router = new Router({
     },
     routes,
 });
-
 export default router;
