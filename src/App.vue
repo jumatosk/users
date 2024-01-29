@@ -1,9 +1,7 @@
 <template>
   <v-app>
     <component :is="currentLayout">
-      <template v-slot:content>
         <router-view />
-      </template>
     </component>
   </v-app>
 </template>
