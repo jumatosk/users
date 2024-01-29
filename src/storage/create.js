@@ -3,10 +3,13 @@ export const create = (key, item) => {
         let _array = [];
         _array.push(item);
         setItem(key, _array);
+        return { status: 201 };
     } else {
         let _array = getItem(key);
         _array.push(item);
         setItem(key, _array);
+
+        return { status: 201 };
     }
 };
 
@@ -32,8 +35,11 @@ export function alreadyExist(key, value) {
     const data = getItem(key);
     let bool = false;
 
-    data.forEach((element) => {
-        if (element.nome === value) bool = true;
-    });
+    if (data && data.length > 0) {
+        data.forEach((element) => {
+            if (String(element.nome).toLowerCase() === String(value).toLowerCase())
+                bool = true;
+        });
+    }
     return bool;
 }
