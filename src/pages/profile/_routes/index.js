@@ -10,4 +10,10 @@ export default [{
         component: () =>
             import ("@/pages/profile/_components/form"),
     },
+    {
+        path: "/perfis/editar/:id",
+        name: "perfil-editar",
+        component: () =>
+            import ("@/pages/profile/_components/form"),
+    },
 ];

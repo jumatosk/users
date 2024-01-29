@@ -24,7 +24,16 @@
           </v-col>
         </template>
       </Header>
-      <DataTable :headersProp="headers" :dataProp="items"> </DataTable>
+      <DataTable :headersProp="headers" :dataProp="items" :colunmCustom="['acao']">
+        <template v-slot:acao="{ item }">
+          <IconButton
+            :onClick="() => navigateToEdit(item)"
+            :name="'mdi-square-edit-outline'"
+            :tooltipName="'Editar'"
+            :btnColor="$colors.icon_edit"
+          />
+        </template>
+      </DataTable>
     </v-card>
   </div>
 </template>
@@ -59,7 +68,13 @@ export default {
     this.items = getItem("perfis");
   },
   computed: {},
-  methods: {},
+  methods: {
+    navigateToEdit(item) {
+      return this.$router.push({
+        path: this.$router.currentRoute.path + `/editar/${item.id}`,
+      });
+    },
+  },
   watch: {},
 };
 </script>

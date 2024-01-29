@@ -42,6 +42,7 @@ import Breadcrumbs from "../../../components/ui/Breadcrumbs.vue";
 import TextField from "../../../components/input/TextField.vue";
 import { constants } from "../_constants";
 import { create, setItemId, alreadyExist } from "../../../storage/create";
+import { getItemById } from "../../../storage/read";
 
 export default {
   name: "perfisForm",
@@ -60,7 +61,7 @@ export default {
       breadcrumbs: [...constants.breadcrumbsForm],
     };
   },
-  async mounted() {},
+  mounted() {},
   computed: {},
   methods: {
     async save() {
@@ -85,7 +86,20 @@ export default {
       }
     },
   },
-  watch: {},
+  watch: {
+    "$route.params.id": {
+      handler(val) {
+        if (val) {
+          let keys = Object.keys(this.form);
+          keys.forEach((i) => {
+            this.form[i] = getItemById("perfis", val)[i];
+          });
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
 };
 </script>
 
