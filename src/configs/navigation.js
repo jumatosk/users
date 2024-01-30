@@ -7,8 +7,13 @@ export default {
             },
             {
                 icon: "mdi-account-outline",
-                text: "Perfil",
+                text: "Perfis",
                 link: "/perfis",
+            },
+            {
+                icon: "mdi-map-marker-outline",
+                text: "Endereços",
+                link: "/enderecos",
             },
         ],
     }, ],
