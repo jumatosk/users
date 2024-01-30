@@ -9,22 +9,85 @@
       <AddButton :currentRoutePath="$router.currentRoute.path" />
     </div>
     <v-card class="pa-2">
-      <Header class="mb-3">
-        <template v-slot:buttons>
-          <v-col cols="12" sm="12" md="6">
-            <v-text-field
-              v-model="buscar"
-              append-icon="mdi-magnify"
-              hide-details
-              dense
-              clearable
-              outlined
-              placeholder="Buscar"
-            ></v-text-field>
+      <v-card class="mb-3 elevation-0">
+        <v-row>
+          <v-col cols="12" sm="4" md="4">
+            <TextField v-model="form.nome" :label="'Nome'" :maxlength="255" />
           </v-col>
-        </template>
-      </Header>
-      <DataTable :headersProp="headers" :dataProp="items" :colunmCustom="['acao', 'created_at']">
+          <v-col cols="12" sm="4" md="4">
+            <TextField
+              v-model="form.cpf"
+              :label="'CPF'"
+              v-mask="'###.###.###-##'"
+            />
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <!-- <TextField
+              v-model="form.data_inicio"
+              :label="'Início'"
+              v-mask="'##/##/####'"
+            /> -->
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <!-- <TextField
+              v-model="form.data_fim"
+              :label="'Fim'"
+              v-mask="'##/##/####'"
+            /> -->
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="form.data_inicio"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="form.data_inicio"
+                  label="Picker in menu"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="form.data_inicio" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false">
+                  Cancelar
+                </v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(form.data_inicio)">
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-row class="mt-6">
+            <IconButton
+              :onClick="() => filterItems()"
+              :name="'mdi-magnify'"
+              :tooltipName="'Buscar'"
+            />
+            <IconButton
+              :onClick="
+                () => {
+                  search(), clearFields();
+                }
+              "
+              :name="'mdi-close-circle-outline'"
+              :tooltipName="'Limpar busca'"
+              :btnColor="'red'"
+            />
+          </v-row>
+        </v-row>
+      </v-card>
+      <DataTable
+        :headersProp="headers"
+        :dataProp="items"
+        :colunmCustom="['acao', 'created_at']"
+      >
         <template v-slot:created_at="{ item }">
           {{ item.created_at | dateformat }}
         </template>
@@ -59,9 +122,11 @@ import DataTable from "../../components/ui/Datatable.vue";
 import Header from "../../components/ui/Header.vue";
 import IconButton from "../../components/ui/IconButton.vue";
 import AddButton from "../../components/ui/AddButton.vue";
+import TextField from "../../components/input/TextField.vue";
 import { constants } from "./_constants";
 import { getItem } from "../../storage/read";
 import { deleteItem } from "../../storage/delete";
+import moment from "moment";
 
 export default {
   components: {
@@ -70,18 +135,21 @@ export default {
     Header,
     IconButton,
     AddButton,
+    TextField,
   },
   data() {
     return {
       breadcrumbs: [...constants.breadcrumbsIndex],
       headers: [...constants.headers],
+      form: { ...constants.formSearch },
       items: [],
       buscar: null,
+      menu: false,
     };
   },
   beforeCreate() {},
   mounted() {
-    this.search()
+    this.search();
   },
   computed: {},
   methods: {
@@ -99,18 +167,45 @@ export default {
       });
     },
     async deleteItemTable(item) {
-      Swal.deleteMessage(
-        "Deseja excluir o usuário ",
-        `${item.nome}`
-      ).then(async (result) => {
-        if (result.isConfirmed) {
-          const resp = deleteItem("usuarios", item.id);
-          if(resp.status == 200) {
-            this.search();
-            Swal.messageToast(this.$strings.msg_excluir);
+      Swal.deleteMessage("Deseja excluir o usuário ", `${item.nome}`).then(
+        async (result) => {
+          if (result.isConfirmed) {
+            const resp = deleteItem("usuarios", item.id);
+            if (resp.status == 200) {
+              this.search();
+              Swal.messageToast(this.$strings.msg_excluir);
+            }
+            if (!resp) return false;
           }
-          if (!resp) return false;
         }
+      );
+    },
+    filterItems() {
+      this.items = this.items.filter((resultado) => {
+        return (
+          resultado.nome
+            .toLowerCase()
+            .includes(this.form.nome?.toLowerCase()) ||
+          resultado.cpf.includes(this.form.cpf) ||
+          moment(resultado.created_at).isSameOrAfter(this.form.data_inicio) ||
+          moment(resultado.created_at).isSameOrBefore(this.form.data_fim)
+        );
+      });
+      this.$forceUpdate();
+      if (
+        !(
+          this.form.nome ||
+          this.form.cpf ||
+          this.form.data_inicio ||
+          this.form.data_fim
+        )
+      )
+        return this.search();
+    },
+    clearFields() {
+      let keys = Object.keys(this.form);
+      keys.forEach((i) => {
+        this.form[i] = null;
       });
     },
   },

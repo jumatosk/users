@@ -13,6 +13,13 @@ const formTemp = {
     enderecoTemp: null,
 };
 
+const formSearch = {
+    nome: null,
+    cpf: null,
+    data_inicio: null,
+    data_fim: null,
+};
+
 const breadcrumbsIndex = [{
         text: "Usuários",
         disabled: false,
@@ -67,6 +74,7 @@ const regex = {
 export const constants = {
     form,
     formTemp,
+    formSearch,
     breadcrumbsIndex,
     breadcrumbsForm,
     breadcrumbsShow,
