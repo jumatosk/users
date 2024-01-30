@@ -34,6 +34,17 @@ const breadcrumbsForm = [{
     },
 ];
 
+const breadcrumbsShow = [{
+        text: "Usuários",
+        disabled: false,
+        to: "/usuarios",
+        exact: true,
+    },
+    {
+        text: "Visualizar",
+    },
+];
+
 const headers = [
     { text: "Nome", value: "nome", align: "left" },
     { text: "Data de cadastro", value: "created_at", align: "left" },
@@ -58,6 +69,7 @@ export const constants = {
     formTemp,
     breadcrumbsIndex,
     breadcrumbsForm,
+    breadcrumbsShow,
     headers,
     headersAdrress,
     regex,
