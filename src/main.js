@@ -11,6 +11,12 @@ import Colors from "./utils/colors";
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
+import "./assets/scss/theme.scss";
+import "./filters/dateFormat";
+
+import VueMask from "v-mask";
+Vue.use(VueMask);
+
 Vue.use(VueSweetalert2);
 
 import Swal from "./swal/swal";

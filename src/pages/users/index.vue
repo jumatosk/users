@@ -2,7 +2,7 @@
   <div class="d-flex flex-grow-1 flex-column">
     <div class="d-flex align-center py-3">
       <div>
-        <div class="display-1">Perfis</div>
+        <div class="display-1">Usuários</div>
         <Breadcrumbs :breadcrumbs="breadcrumbs" />
       </div>
       <v-spacer></v-spacer>
@@ -24,8 +24,17 @@
           </v-col>
         </template>
       </Header>
-      <DataTable :headersProp="headers" :dataProp="items" :colunmCustom="['acao']">
+      <DataTable :headersProp="headers" :dataProp="items" :colunmCustom="['acao', 'created_at']">
+        <template v-slot:created_at="{ item }">
+          {{ item.created_at | dateformat }}
+        </template>
         <template v-slot:acao="{ item }">
+          <IconButton
+            :onClick="() => navigateToView(item)"
+            :name="'mdi-eye-outline'"
+            :tooltipName="'Visualizar'"
+            :btnColor="$colors.icon_view"
+          />
           <IconButton
             :onClick="() => navigateToEdit(item)"
             :name="'mdi-square-edit-outline'"
@@ -77,7 +86,12 @@ export default {
   computed: {},
   methods: {
     search() {
-      this.items = getItem("perfis");
+      this.items = getItem("usuarios");
+    },
+    navigateToView(item) {
+      return this.$router.push({
+        path: this.$router.currentRoute.path + `/visualizar/${item.id}`,
+      });
     },
     navigateToEdit(item) {
       return this.$router.push({
@@ -86,11 +100,11 @@ export default {
     },
     async deleteItemTable(item) {
       Swal.deleteMessage(
-        "Deseja excluir o perfil ",
+        "Deseja excluir o usuário ",
         `${item.nome}`
       ).then(async (result) => {
         if (result.isConfirmed) {
-          const resp = deleteItem("perfis", item.id);
+          const resp = deleteItem("usuarios", item.id);
           if(resp.status == 200) {
             this.search();
             Swal.messageToast(this.$strings.msg_excluir);

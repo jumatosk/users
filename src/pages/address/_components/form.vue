@@ -13,18 +13,18 @@
         <v-row>
           <v-col cols="12" sm="8" md="8">
             <TextField
-            v-model="form.logradouro"
-            :label="'Logradouro'"
-            :maxlength="255"
-            :rules="required"
-            required
+              v-model="form.logradouro"
+              :label="'Logradouro'"
+              :maxlength="255"
+              :rules="required"
+              required
             />
           </v-col>
           <v-col cols="12" sm="4" md="4">
             <TextField
-              v-model.number="form.cep"
+              v-model="form.cep"
               :label="'CEP'"
-              :maxlength="8"
+              v-mask="'#####-###'"
               :rules="required"
               required
             />
@@ -71,7 +71,11 @@ export default {
       breadcrumbs: [...constants.breadcrumbsForm],
     };
   },
-  mounted() {},
+  mounted() {
+    this.breadcrumbs[1].text = "Cadastrar";
+    if (this.$route.params.id !== undefined)
+      this.breadcrumbs[1].text = "Editar";
+  },
   computed: {},
   methods: {
     async save() {
@@ -79,16 +83,9 @@ export default {
       if (!this.formValidated) {
         return false;
       }
-      
-      if (alreadyExist("enderecos", this.form.logradouro) && !this.$route.params.id) {
-        Swal.message(
-          this.$strings.atencao,
-          this.$strings.msg_nome_existente,
-          this.$strings.icon_warning
-        );
-        return;
-      }
-      if (this.$route.params.id && !alreadyExist("enderecos", this.form.logradouro)) {
+
+      if (
+        this.$route.params.id) {
         this.form.id = Number(this.$route.params.id);
 
         const response = update("enderecos", this.form);
@@ -96,6 +93,16 @@ export default {
           this.$router.push({ name: "enderecos" });
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
+      } else if (
+        alreadyExist("enderecos", this.form.logradouro, "logradouro") &&
+        !this.$route.params.id
+      ) {
+        Swal.message(
+          this.$strings.atencao,
+          this.$strings.msg_endereco_existente,
+          this.$strings.icon_warning
+        );
+        return;
       } else {
         this.form.id = setItemId("enderecos");
 

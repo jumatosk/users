@@ -8,7 +8,7 @@
       <v-spacer></v-spacer>
       <AddButton :currentRoutePath="$router.currentRoute.path" />
     </div>
-    <v-card class="pa-2 elevation-0">
+    <v-card class="pa-2">
       <Header class="mb-3">
         <template v-slot:buttons>
           <v-col cols="12" sm="12" md="6">

@@ -31,13 +31,13 @@ export function setItemId(key) {
     return getItem(key).length + 1;
 }
 
-export function alreadyExist(key, value) {
+export function alreadyExist(key, value, field) {
     const data = getItem(key);
     let bool = false;
 
     if (data && data.length > 0) {
         data.forEach((element) => {
-            if (String(element.nome).toLowerCase() === String(value).toLowerCase())
+            if (String(element[field]).toLowerCase() === String(value).toLowerCase())
                 bool = true;
         });
     }
