@@ -1,0 +1,255 @@
+{
+    "perfis": [{
+            "id": 1,
+            "nome": "Administrador"
+        },
+        {
+            "id": 2,
+            "nome": "Usuário"
+        },
+        {
+            "id": 3,
+            "nome": "Moderador"
+        },
+        {
+            "id": 4,
+            "nome": "Visitante"
+        },
+        {
+            "id": 5,
+            "nome": "Assistente"
+        },
+        {
+            "id": 6,
+            "nome": "Editor"
+        },
+        {
+            "id": 7,
+            "nome": "Gerente"
+        },
+        {
+            "id": 8,
+            "nome": "Cliente"
+        },
+        {
+            "id": 9,
+            "nome": "Desenvolvedor"
+        },
+        {
+            "id": 10,
+            "nome": "Analista"
+        }
+    ],
+    "enderecos": [{
+            "id": 1,
+            "logradouro": "Rua das Flores, 123",
+            "cep": "12345-678"
+        },
+        {
+            "id": 2,
+            "logradouro": "Avenida Principal, 456",
+            "cep": "54321-098"
+        },
+        {
+            "id": 3,
+            "logradouro": "Rua da Praia, 789",
+            "cep": "98765-432"
+        },
+        {
+            "id": 4,
+            "logradouro": "Avenida Central, 321",
+            "cep": "87654-321"
+        },
+        {
+            "id": 5,
+            "logradouro": "Rua do Comércio, 555",
+            "cep": "13579-246"
+        },
+        {
+            "id": 6,
+            "logradouro": "Avenida das Árvores, 666",
+            "cep": "24680-135"
+        },
+        {
+            "id": 7,
+            "logradouro": "Rua das Pedras, 777",
+            "cep": "98765-432"
+        },
+        {
+            "id": 8,
+            "logradouro": "Avenida das Flores, 888",
+            "cep": "12345-678"
+        },
+        {
+            "id": 9,
+            "logradouro": "Avenida da Paz, 999",
+            "cep": "54321-098"
+        },
+        {
+            "id": 10,
+            "logradouro": "Rua do Sol, 1010",
+            "cep": "87654-321"
+        }
+    ],
+    "usuarios": [{
+            "id": 1,
+            "nome": "Lucas Silva",
+            "cpf": "123.456.789-00",
+            "email": "lucas.silva@example.com",
+            "enderecos": [{
+                "id": 1,
+                "logradouro": "Rua das Flores, 123",
+                "cep": "12345-678"
+            }],
+            "perfil": {
+                "id": 1,
+                "nome": "Administrador"
+            },
+            "created_at": "2024-01-01"
+        },
+        {
+            "id": 2,
+            "nome": "Ana Souza",
+            "cpf": "987.654.321-00",
+            "email": "ana.souza@example.com",
+            "enderecos": [{
+                "id": 2,
+                "logradouro": "Avenida Principal, 456",
+                "cep": "54321-098"
+            }],
+            "perfil": {
+                "id": 2,
+                "nome": "Usuário"
+            },
+            "created_at": "2024-01-02"
+        },
+        {
+            "id": 3,
+            "nome": "Pedro Oliveira",
+            "cpf": "456.789.123-00",
+            "email": "pedro.oliveira@example.com",
+            "enderecos": [{
+                "id": 3,
+                "logradouro": "Rua da Praia, 789",
+                "cep": "98765-432"
+            }],
+            "perfil": {
+                "id": 3,
+                "nome": "Moderador"
+            },
+            "created_at": "2023-12-31"
+        },
+        {
+            "id": 4,
+            "nome": "Camila Santos",
+            "cpf": "111.222.333-44",
+            "email": "camila.santos@example.com",
+            "enderecos": [{
+                "id": 4,
+                "logradouro": "Avenida Central, 321",
+                "cep": "87654-321"
+            }],
+            "perfil": {
+                "id": 4,
+                "nome": "Visitante"
+            },
+            "created_at": "2023-01-31"
+        },
+        {
+            "id": 5,
+            "nome": "Gustavo Lima",
+            "cpf": "222.333.444-55",
+            "email": "gustavo.lima@example.com",
+            "enderecos": [{
+                "id": 5,
+                "logradouro": "Rua do Comércio, 555",
+                "cep": "13579-246"
+            }],
+            "perfil": {
+                "id": 5,
+                "nome": "Assistente"
+            },
+            "created_at": "2024-01-05"
+        },
+        {
+            "id": 6,
+            "nome": "Mariana Costa",
+            "cpf": "333.444.555-66",
+            "email": "mariana.costa@example.com",
+            "enderecos": [{
+                "id": 6,
+                "logradouro": "Avenida das Árvores, 666",
+                "cep": "24680-135"
+            }],
+            "perfil": {
+                "id": 6,
+                "nome": "Editor"
+            },
+            "created_at": "2024-01-25"
+        },
+        {
+            "id": 7,
+            "nome": "Rafaela Nunes",
+            "cpf": "444.555.666-77",
+            "email": "rafaela.nunes@example.com",
+            "enderecos": [{
+                "id": 7,
+                "logradouro": "Rua das Pedras, 777",
+                "cep": "98765-432"
+            }],
+            "perfil": {
+                "id": 7,
+                "nome": "Gerente"
+            },
+            "created_at": "2024-01-11"
+        },
+        {
+            "id": 8,
+            "nome": "Daniel Oliveira",
+            "cpf": "555.666.777-88",
+            "email": "daniel.oliveira@example.com",
+            "enderecos": [{
+                "id": 8,
+                "logradouro": "Avenida das Flores, 888",
+                "cep": "12345-678"
+            }],
+            "perfil": {
+                "id": 8,
+                "nome": "Cliente"
+            },
+            "created_at": "2024-01-28"
+        },
+        {
+            "id": 9,
+            "nome": "Carolina Martins",
+            "cpf": "666.777.888-99",
+            "email": "carolina.martins@example.com",
+            "enderecos": [{
+                "id": 9,
+                "logradouro": "Avenida da Paz, 999",
+                "cep": "54321-098"
+            }],
+            "perfil": {
+                "id": 9,
+                "nome": "Desenvolvedor"
+            },
+            "created_at": "2024-01-15"
+        },
+        {
+            "id": 10,
+            "nome": "Thiago Santos",
+            "cpf": "777.888.999-00",
+            "email": "thiago.santos@example.com",
+            "enderecos": [{
+                "id": 10,
+                "logradouro": "Rua do Sol, 1010",
+                "cep": "87654-321"
+            }],
+            "perfil": {
+                "id": 10,
+                "nome": "Analista"
+            },
+            "created_at": "2024-02-01"
+        }
+    ]
+}

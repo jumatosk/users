@@ -62,7 +62,10 @@ export default {
       breadcrumbs: [...constants.breadcrumbsForm],
     };
   },
-  mounted() {},
+  mounted() {
+    this.breadcrumbs[1].text = "Cadastrar";
+    if (this.$route.params.id) this.breadcrumbs[1].text = "Editar";
+  },
   computed: {},
   methods: {
     async save() {
@@ -70,22 +73,25 @@ export default {
       if (!this.formValidated) {
         return false;
       }
-      if (alreadyExist("perfis", this.form.nome) && !this.$route.params.id) {
+
+      if (this.$route.params.id) {
+        this.form.id = Number(this.$route.params.id);
+
+        const response = update("perfis", this.form);
+        if (response.status == 200) {
+          this.$router.push({ name: "perfis" });
+          Swal.messageToast(this.$strings.msg_alterar, "success");
+        }
+      } else if (
+        alreadyExist("perfis", this.form.nome, "nome") &&
+        !this.$route.params.id
+      ) {
         Swal.message(
           this.$strings.atencao,
           this.$strings.msg_nome_existente,
           this.$strings.icon_warning
         );
         return;
-      }
-      if (this.$route.params.id && !alreadyExist("perfis", this.form.nome)) {
-        this.form.id = Number(this.$route.params.id);
-        
-        const response = update("perfis", this.form);
-        if (response.status == 200) {
-          this.$router.push({ name: "perfis" });
-          Swal.messageToast(this.$strings.msg_alterar, "success");
-        }
       } else {
         this.form.id = setItemId("perfis");
 

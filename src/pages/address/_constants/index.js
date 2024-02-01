@@ -15,9 +15,9 @@ const breadcrumbsIndex = [{
 ];
 
 const breadcrumbsForm = [{
-        text: "Perfis",
+        text: "Endereços",
         disabled: false,
-        to: "/perfis",
+        to: "/enderecos",
         exact: true,
     },
     {

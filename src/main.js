@@ -7,9 +7,16 @@ import store from "./store";
 
 import Strings from "./utils/strings";
 import Colors from "./utils/colors";
+import Keys from "./storage/keys";
 
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+
+import "./assets/scss/theme.scss";
+import "./filters/dateFormat";
+
+import VueMask from "v-mask";
+Vue.use(VueMask);
 
 Vue.use(VueSweetalert2);
 
@@ -20,6 +27,7 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$strings = Strings;
 Vue.prototype.$colors = Colors;
+Vue.prototype.$keys = Keys;
 
 new Vue({
     vuetify,

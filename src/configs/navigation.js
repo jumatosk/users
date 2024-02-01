@@ -15,6 +15,11 @@ export default {
                 text: "Endereços",
                 link: "/enderecos",
             },
+            {
+                icon: "mdi-account-multiple-outline",
+                text: "Usuários",
+                link: "/usuarios",
+            },
         ],
     }, ],
 };
