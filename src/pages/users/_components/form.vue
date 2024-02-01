@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-grow-1 flex-column">
+  <div class="d-flex flex-grow-1 flex-column pa-2">
     <div class="d-flex align-center py-3">
       <div>
         <div class="display-1">
@@ -7,6 +7,13 @@
         </div>
         <Breadcrumbs :breadcrumbs="breadcrumbs" />
       </div>
+      <v-spacer></v-spacer>
+      <IconButton
+        :size="32"
+        :name="'mdi-restore'"
+        :tooltipName="'Voltar'"
+        :on-click="() => $router.go(-1)"
+      />
     </div>
     <v-card class="pa-2">
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -112,12 +119,6 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <FormButton
-            :click="() => $router.go(-1)"
-            outlined
-            :label="$strings.btn_voltar"
-            :labelColor="'primary'"
-          />
           <FormButton dark :click="save" :label="$strings.btn_salvar" />
         </v-card-actions>
       </v-form>
@@ -174,9 +175,7 @@ export default {
         return false;
       }
 
-      if (
-        this.$route.params.id
-      ) {
+      if (this.$route.params.id) {
         this.form.id = Number(this.$route.params.id);
 
         const response = update(this.$keys.USUARIOS, this.form);
@@ -184,8 +183,10 @@ export default {
           this.$router.push({ name: this.$keys.USUARIOS });
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
-      } else if (alreadyExist(this.$keys.USUARIOS, this.form.nome, "nome")&&
-        !this.$route.params.id) {
+      } else if (
+        alreadyExist(this.$keys.USUARIOS, this.form.nome, "nome") &&
+        !this.$route.params.id
+      ) {
         Swal.message(
           this.$strings.atencao,
           this.$strings.msg_nome_existente,
