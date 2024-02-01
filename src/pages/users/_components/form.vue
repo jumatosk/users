@@ -25,6 +25,7 @@
               :maxlength="255"
               :rules="required"
               required
+              :disabled="$route.params.id != undefined"
             />
           </v-col>
         </v-row>
@@ -36,6 +37,7 @@
               v-mask="'###.###.###-##'"
               :rules="[required[0], cpf]"
               required
+              :disabled="$route.params.id != undefined"
             />
           </v-col>
           <v-col cols="12" sm="4" md="4">
@@ -149,7 +151,11 @@ import TextField from "../../../components/input/TextField.vue";
 import SelectAutocomplete from "../../../components/input/SelectAutocomplete.vue";
 import { constants } from "../_constants";
 import { create, setItemId, alreadyExist } from "../../../storage/create";
-import { getItemById, getItem as getItems } from "../../../storage/read";
+import {
+  getItemById,
+  getItem as getItems,
+  getItemByField,
+} from "../../../storage/read";
 import { update } from "../../../storage/update";
 import moment from "moment";
 import { validarCPF } from "../../../utils/functions";
@@ -182,7 +188,6 @@ export default {
       headers: [...constants.headersAdrress],
       itemsPerfis: [],
       itemsEnderecos: [],
-      addressModel: { ...constants.address },
     };
   },
   beforeCreate() {
@@ -219,12 +224,12 @@ export default {
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
       } else if (
-        alreadyExist(this.$keys.USUARIOS, this.form.nome, "nome") &&
+        alreadyExist(this.$keys.USUARIOS, this.form.cpf, "cpf") &&
         !this.$route.params.id
       ) {
         Swal.message(
           this.$strings.atencao,
-          this.$strings.msg_nome_existente,
+          this.$strings.msg_cpf_existente,
           this.$strings.icon_warning
         );
         return;
@@ -264,12 +269,8 @@ export default {
         this.resetAddressFields();
       }, 200);
     },
-    getFormToSaveOrUpdate() {
-      if (!this.$route.params.id) {
-        this.form.created_at = moment().format("YYYY-MM-DD");
-      }
-      const { id, nome, cpf, email, enderecos, perfil, created_at } = this.form;
-      return { id, nome, cpf, email, enderecos, perfil, created_at };
+    checkIfIsInserted(value) {
+      return this.form.enderecos.find((item) => item.id == value.id);
     },
     resetAddressFields() {
       let keys = Object.keys(this.formTemp.endereco);
@@ -278,8 +279,12 @@ export default {
       });
       this.formTemp.enderecoTemp = {};
     },
-    checkIfIsInserted(value) {
-      return this.form.enderecos.find((item) => item.id == value.id);
+    getFormToSaveOrUpdate() {
+      if (!this.$route.params.id) {
+        this.form.created_at = moment().format("YYYY-MM-DD");
+      }
+      const { id, nome, cpf, email, enderecos, perfil, created_at } = this.form;
+      return { id, nome, cpf, email, enderecos, perfil, created_at };
     },
     deleteItemTable(item) {
       this.form.enderecos = this.form.enderecos.filter(
@@ -311,24 +316,22 @@ export default {
     "formTemp.endereco.cep": {
       async handler(cep) {
         if (cep?.length == 9) {
-          let _cep = cep.replace("-", "");
-          await this.getAddress(cep);
+          if (!alreadyExist(this.$keys.ENDERECOS, cep, "cep")) {
+            let _cep = cep.replace("-", "");
+            await this.getAddress(_cep);
+          } else {
+            this.formTemp.endereco = {
+              ...getItemByField(this.$keys.ENDERECOS, "cep", cep),
+            };
+          }
         }
       },
     },
     getItemAddress(address) {
       if (!address?.uf) {
-        let keys = Object.keys(this.addressModel);
-        keys.forEach((i) => {
-          this.addressModel[i] = null;
-        });
         this.formTemp.endereco.logradouro = null;
         Swal.messageToast(this.$strings.address_not_found, "error");
       } else {
-        let keys = Object.keys(this.addressModel);
-        keys.forEach((i) => {
-          this.addressModel[i] = address[i];
-        });
         this.formTemp.endereco.logradouro = `${address.logradouro}, ${address.bairro}, ${address.localidade} - ${address.uf}`;
       }
     },

@@ -105,6 +105,7 @@
               :onClick="() => filterItems()"
               :name="'mdi-magnify'"
               :tooltipName="'Buscar'"
+              size="28"
             />
             <IconButton
               :onClick="
@@ -116,6 +117,8 @@
               :name="'mdi-close-circle-outline'"
               :tooltipName="'Limpar busca'"
               :btnColor="'red'"
+              class="ml-2"
+              size="28"
             />
           </v-row>
         </v-row>

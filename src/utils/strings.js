@@ -14,6 +14,7 @@ const Strings = {
     atencao: "Atenção!",
     msg_campos_obrigatorios: "Por favor, preencha os campos obrigatórios.",
     msg_nome_existente: "Já existe um registro com este nome.",
+    msg_cpf_existente: "Já existe um usuário com este cpf.",
     msg_endereco_existente: "Endereço já cadastrado.",
 
     //alerts

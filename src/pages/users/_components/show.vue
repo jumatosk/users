@@ -1,10 +1,17 @@
 <template>
-  <div class="d-flex flex-grow-1 flex-column">
+  <div class="d-flex flex-grow-1 flex-column pa-2">
     <div class="d-flex align-center py-3">
       <div>
         <div class="display-1">Visualizar usuário</div>
         <Breadcrumbs :breadcrumbs="breadcrumbs" />
       </div>
+      <v-spacer></v-spacer>
+      <IconButton
+        :size="32"
+        :name="'mdi-restore'"
+        :tooltipName="'Voltar'"
+        :on-click="() => $router.go(-1)"
+      />
     </div>
     <v-card class="pa-2">
       <v-row>
@@ -44,16 +51,6 @@
           </v-col>
         </v-row>
       </fieldset>
-
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <FormButton
-          :click="() => $router.go(-1)"
-          outlined
-          :label="$strings.btn_voltar"
-          :labelColor="'primary'"
-        />
-      </v-card-actions>
     </v-card>
   </div>
 </template>

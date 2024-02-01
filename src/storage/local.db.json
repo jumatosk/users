@@ -94,7 +94,7 @@
     "usuarios": [{
             "id": 1,
             "nome": "Lucas Silva",
-            "cpf": "123.456.789-00",
+            "cpf": "619.512.901-19",
             "email": "lucas.silva@example.com",
             "enderecos": [{
                 "id": 1,
@@ -110,7 +110,7 @@
         {
             "id": 2,
             "nome": "Ana Souza",
-            "cpf": "987.654.321-00",
+            "cpf": "385.159.313-89",
             "email": "ana.souza@example.com",
             "enderecos": [{
                 "id": 2,
@@ -126,7 +126,7 @@
         {
             "id": 3,
             "nome": "Pedro Oliveira",
-            "cpf": "456.789.123-00",
+            "cpf": "4071.125.156-88",
             "email": "pedro.oliveira@example.com",
             "enderecos": [{
                 "id": 3,
@@ -142,7 +142,7 @@
         {
             "id": 4,
             "nome": "Camila Santos",
-            "cpf": "111.222.333-44",
+            "cpf": "129.748.377-43",
             "email": "camila.santos@example.com",
             "enderecos": [{
                 "id": 4,
@@ -158,7 +158,7 @@
         {
             "id": 5,
             "nome": "Gustavo Lima",
-            "cpf": "222.333.444-55",
+            "cpf": "497.357.061-30",
             "email": "gustavo.lima@example.com",
             "enderecos": [{
                 "id": 5,
@@ -174,7 +174,7 @@
         {
             "id": 6,
             "nome": "Mariana Costa",
-            "cpf": "333.444.555-66",
+            "cpf": "737.675.691-40",
             "email": "mariana.costa@example.com",
             "enderecos": [{
                 "id": 6,
@@ -190,7 +190,7 @@
         {
             "id": 7,
             "nome": "Rafaela Nunes",
-            "cpf": "444.555.666-77",
+            "cpf": "688.069.392-03",
             "email": "rafaela.nunes@example.com",
             "enderecos": [{
                 "id": 7,
@@ -206,7 +206,7 @@
         {
             "id": 8,
             "nome": "Daniel Oliveira",
-            "cpf": "555.666.777-88",
+            "cpf": "247.121.861-00",
             "email": "daniel.oliveira@example.com",
             "enderecos": [{
                 "id": 8,
@@ -222,7 +222,7 @@
         {
             "id": 9,
             "nome": "Carolina Martins",
-            "cpf": "666.777.888-99",
+            "cpf": "133.770.647-70",
             "email": "carolina.martins@example.com",
             "enderecos": [{
                 "id": 9,
@@ -238,7 +238,7 @@
         {
             "id": 10,
             "nome": "Thiago Santos",
-            "cpf": "777.888.999-00",
+            "cpf": "291.993.160-13",
             "email": "thiago.santos@example.com",
             "enderecos": [{
                 "id": 10,

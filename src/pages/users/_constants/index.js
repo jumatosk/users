@@ -77,13 +77,6 @@ const regex = {
     validEmail: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 };
 
-const address = {
-    logradouro: null,
-    bairro: null,
-    localidade: null,
-    uf: null,
-};
-
 export const constants = {
     state,
     form,
@@ -95,5 +88,4 @@ export const constants = {
     headers,
     headersAdrress,
     regex,
-    address,
 };
