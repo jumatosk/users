@@ -20,8 +20,7 @@
 
       <main-menu :menu="navigation.menu" />
     </v-navigation-drawer>
-    <!-- <v-app-bar app color="teal lighten-3"> -->
-    <v-app-bar app light :flat="isToolbarDetached">
+    <v-app-bar app light :flat="isToolbarDetached" color="white">
       <v-card
         class="flex-grow-1 d-flex"
         :flat="!isToolbarDetached"

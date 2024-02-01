@@ -100,11 +100,12 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-row class="mt-6">
+          <v-row class="mt-4 mx-2">
             <IconButton
               :onClick="() => filterItems()"
               :name="'mdi-magnify'"
               :tooltipName="'Buscar'"
+              size="28"
             />
             <IconButton
               :onClick="
@@ -116,6 +117,8 @@
               :name="'mdi-close-circle-outline'"
               :tooltipName="'Limpar busca'"
               :btnColor="'red'"
+              class="ml-2"
+              size="28"
             />
           </v-row>
         </v-row>
@@ -194,7 +197,7 @@ export default {
   },
   methods: {
     search() {
-      this.items = getItem("usuarios");
+      this.items = getItem(this.$keys.USUARIOS);
     },
     navigateToView(item) {
       return this.$router.push({
@@ -210,7 +213,7 @@ export default {
       Swal.deleteMessage("Deseja excluir o usuário ", `${item.nome}`).then(
         async (result) => {
           if (result.isConfirmed) {
-            const resp = deleteItem("usuarios", item.id);
+            const resp = deleteItem(this.$keys.USUARIOS, item.id);
             if (resp.status == 200) {
               this.search();
               Swal.messageToast(this.$strings.msg_excluir);
@@ -224,7 +227,7 @@ export default {
       let filteredItems = [];
       this.items = [];
 
-      filteredItems = getItem("usuarios").filter((result) => {
+      filteredItems = getItem(this.$keys.USUARIOS).filter((result) => {
         return (
           result.nome
             .toLowerCase()

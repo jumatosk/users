@@ -1,3 +1,7 @@
+const state = {};
+
+state["address"] = [];
+
 const form = {
     id: null,
     nome: null,
@@ -70,10 +74,11 @@ const headersAdrress = [
 ];
 
 const regex = {
-    validEmail: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-}
+    validEmail: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+};
 
 export const constants = {
+    state,
     form,
     formTemp,
     formSearch,

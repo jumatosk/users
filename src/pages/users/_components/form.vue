@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-grow-1 flex-column">
+  <div class="d-flex flex-grow-1 flex-column pa-2">
     <div class="d-flex align-center py-3">
       <div>
         <div class="display-1">
@@ -7,6 +7,13 @@
         </div>
         <Breadcrumbs :breadcrumbs="breadcrumbs" />
       </div>
+      <v-spacer></v-spacer>
+      <IconButton
+        :size="32"
+        :name="'mdi-restore'"
+        :tooltipName="'Voltar'"
+        :on-click="() => $router.go(-1)"
+      />
     </div>
     <v-card class="pa-2">
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -18,6 +25,7 @@
               :maxlength="255"
               :rules="required"
               required
+              :disabled="$route.params.id != undefined"
             />
           </v-col>
         </v-row>
@@ -27,8 +35,9 @@
               v-model="form.cpf"
               :label="'CPF'"
               v-mask="'###.###.###-##'"
-              :rules="required"
+              :rules="[required[0], cpf]"
               required
+              :disabled="$route.params.id != undefined"
             />
           </v-col>
           <v-col cols="12" sm="4" md="4">
@@ -52,7 +61,7 @@
             />
           </v-col>
         </v-row>
-        <fieldset>
+        <fieldset class="pa-2">
           <legend>Endereços</legend>
           <v-row>
             <v-col cols="12" sm="6" md="6">
@@ -66,18 +75,32 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" sm="6" md="6">
-              <TextField
-                v-model="formTemp.endereco.logradouro"
-                :label="'Logradouro'"
-                :maxlength="255"
-              />
+            <v-col cols="12" sm="4" md="6">
+              <v-alert
+                colored-border
+                type="info"
+                style="font-size: 10pt"
+                border="right"
+                class="pl-1"
+                dense
+              >
+                Informe o cep para buscar o endereço.
+              </v-alert>
             </v-col>
+          </v-row>
+          <v-row>
             <v-col cols="12" sm="4" md="4">
               <TextField
                 v-model="formTemp.endereco.cep"
                 :label="'CEP'"
                 v-mask="'#####-###'"
+              />
+            </v-col>
+            <v-col cols="12" sm="6" md="6">
+              <TextField
+                v-model="formTemp.endereco.logradouro"
+                :label="'Logradouro'"
+                :maxlength="255"
               />
             </v-col>
             <v-col cols="12" sm="2" md="2">
@@ -112,12 +135,6 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <FormButton
-            :click="() => $router.go(-1)"
-            outlined
-            :label="$strings.btn_voltar"
-            :labelColor="'primary'"
-          />
           <FormButton dark :click="save" :label="$strings.btn_salvar" />
         </v-card-actions>
       </v-form>
@@ -125,6 +142,7 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from "vuex";
 import FormButton from "../../../components/ui/FormButton.vue";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs.vue";
 import IconButton from "../../../components/ui/IconButton.vue";
@@ -133,9 +151,15 @@ import TextField from "../../../components/input/TextField.vue";
 import SelectAutocomplete from "../../../components/input/SelectAutocomplete.vue";
 import { constants } from "../_constants";
 import { create, setItemId, alreadyExist } from "../../../storage/create";
-import { getItemById, getItem as getItems } from "../../../storage/read";
+import {
+  getItemById,
+  getItem as getItems,
+  getItemByField,
+} from "../../../storage/read";
 import { update } from "../../../storage/update";
 import moment from "moment";
+import { validarCPF } from "../../../utils/functions";
+import store from "../_store";
 
 export default {
   name: "usuarioForm",
@@ -155,6 +179,9 @@ export default {
       email: (v) => {
         return constants.regex.validEmail.test(v) || "E-mail inválido.";
       },
+      cpf: (v) => {
+        return validarCPF(v) || "CPF inválido.";
+      },
       form: { ...constants.form },
       formTemp: { ...constants.formTemp },
       breadcrumbs: [...constants.breadcrumbsForm],
@@ -163,53 +190,67 @@ export default {
       itemsEnderecos: [],
     };
   },
+  beforeCreate() {
+    const STORE = "$_users";
+
+    if (!(STORE in this.$store._modules.root._children))
+      this.$store.registerModule(STORE, store);
+  },
   mounted() {
-    this.itemsPerfis = getItems("perfis");
-    this.itemsEnderecos = getItems("enderecos");
+    this.itemsPerfis = getItems(this.$keys.PERFIS);
+    this.itemsEnderecos = getItems(this.$keys.ENDERECOS);
+  },
+  computed: {
+    ...mapGetters({
+      getItemAddress: "$_users/searchByCep",
+    }),
   },
   methods: {
+    ...mapActions({
+      getAddress: "$_users/searchByCep",
+    }),
     async save() {
       this.formValidated = this.$refs.form.validate();
       if (!this.formValidated) {
         return false;
       }
 
-      if (
-        this.$route.params.id
-      ) {
+      if (this.$route.params.id) {
         this.form.id = Number(this.$route.params.id);
 
-        const response = update("usuarios", this.form);
+        const response = update(this.$keys.USUARIOS, this.form);
         if (response.status == 200) {
-          this.$router.push({ name: "usuarios" });
+          this.$router.push({ name: this.$keys.USUARIOS });
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
-      } else if (alreadyExist("usuarios", this.form.nome, "nome")&&
-        !this.$route.params.id) {
+      } else if (
+        alreadyExist(this.$keys.USUARIOS, this.form.cpf, "cpf") &&
+        !this.$route.params.id
+      ) {
         Swal.message(
           this.$strings.atencao,
-          this.$strings.msg_nome_existente,
+          this.$strings.msg_cpf_existente,
           this.$strings.icon_warning
         );
         return;
       } else {
-        this.form.id = setItemId("usuarios");
+        this.form.id = setItemId(this.$keys.USUARIOS);
 
         const _form = this.getFormToSaveOrUpdate();
 
-        const response = create("usuarios", _form);
+        const response = create(this.$keys.USUARIOS, _form);
         this.saveAddress(_form.enderecos);
 
         if (response.status == 201) {
-          this.$router.push({ name: "usuarios" });
+          this.$router.push({ name: this.$keys.USUARIOS });
           Swal.messageToast(this.$strings.msg_adicionar, "success");
         }
       }
     },
     saveAddress(enderecos) {
       enderecos.map((item) => {
-        if (!getItemById("enderecos", item.id)) {
-          create("enderecos", item);
+        if (!getItemById(this.$keys.ENDERECOS, item.id)) {
+          create(this.$keys.ENDERECOS, item);
         }
       });
     },
@@ -221,19 +262,15 @@ export default {
           this.$strings.icon_warning
         );
       if (!value.id) {
-        this.formTemp.endereco.id = setItemId("enderecos");
+        this.formTemp.endereco.id = setItemId(this.$keys.ENDERECOS);
       }
       this.form.enderecos.push({ ...value });
       setTimeout(() => {
         this.resetAddressFields();
       }, 200);
     },
-    getFormToSaveOrUpdate() {
-      if (!this.$route.params.id) {
-        this.form.created_at = moment().format("YYYY-MM-DD");
-      }
-      const { id, nome, cpf, email, enderecos, perfil, created_at } = this.form;
-      return { id, nome, cpf, email, enderecos, perfil, created_at };
+    checkIfIsInserted(value) {
+      return this.form.enderecos.find((item) => item.id == value.id);
     },
     resetAddressFields() {
       let keys = Object.keys(this.formTemp.endereco);
@@ -242,8 +279,12 @@ export default {
       });
       this.formTemp.enderecoTemp = {};
     },
-    checkIfIsInserted(value) {
-      return this.form.enderecos.find((item) => item.id == value.id);
+    getFormToSaveOrUpdate() {
+      if (!this.$route.params.id) {
+        this.form.created_at = moment().format("YYYY-MM-DD");
+      }
+      const { id, nome, cpf, email, enderecos, perfil, created_at } = this.form;
+      return { id, nome, cpf, email, enderecos, perfil, created_at };
     },
     deleteItemTable(item) {
       this.form.enderecos = this.form.enderecos.filter(
@@ -257,7 +298,7 @@ export default {
         if (val) {
           let keys = Object.keys(this.form);
           keys.forEach((i) => {
-            this.form[i] = getItemById("usuarios", val)[i];
+            this.form[i] = getItemById(this.$keys.USUARIOS, val)[i];
           });
         }
       },
@@ -271,6 +312,28 @@ export default {
         }
       },
       deep: true,
+    },
+    "formTemp.endereco.cep": {
+      async handler(cep) {
+        if (cep?.length == 9) {
+          if (!alreadyExist(this.$keys.ENDERECOS, cep, "cep")) {
+            let _cep = cep.replace("-", "");
+            await this.getAddress(_cep);
+          } else {
+            this.formTemp.endereco = {
+              ...getItemByField(this.$keys.ENDERECOS, "cep", cep),
+            };
+          }
+        }
+      },
+    },
+    getItemAddress(address) {
+      if (!address?.uf) {
+        this.formTemp.endereco.logradouro = null;
+        Swal.messageToast(this.$strings.address_not_found, "error");
+      } else {
+        this.formTemp.endereco.logradouro = `${address.logradouro}, ${address.bairro}, ${address.localidade} - ${address.uf}`;
+      }
     },
   },
 };

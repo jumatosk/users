@@ -15,6 +15,9 @@
             <v-text-field
               v-model="buscar"
               append-icon="mdi-magnify"
+              @click:append="filterItems"
+              @keyup.enter="filterItems"
+              @click:clear="() => {buscar = null, search()}"
               hide-details
               dense
               clearable
@@ -77,7 +80,20 @@ export default {
   computed: {},
   methods: {
     search() {
-      this.items = getItem("enderecos");
+      this.items = getItem(this.$keys.ENDERECOS);
+    },
+    filterItems() {
+      let filteredItems = [];
+      this.items = [];
+
+      filteredItems = getItem(this.$keys.ENDERECOS).filter((result) => {
+        return result.logradouro.toLowerCase().includes(this.buscar?.toLowerCase());
+      });
+      this.items = [...filteredItems];
+
+      if (!this.buscar) {
+        return this.search();
+      }
     },
     navigateToEdit(item) {
       return this.$router.push({
@@ -90,7 +106,7 @@ export default {
         `${item.logradouro}`
       ).then(async (result) => {
         if (result.isConfirmed) {
-          const resp = deleteItem("enderecos", item.id);
+          const resp = deleteItem(this.$keys.ENDERECOS, item.id);
           if(resp.status == 200) {
             this.search();
             Swal.messageToast(this.$strings.msg_excluir);

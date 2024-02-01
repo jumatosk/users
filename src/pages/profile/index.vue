@@ -15,6 +15,9 @@
             <v-text-field
               v-model="buscar"
               append-icon="mdi-magnify"
+              @click:append="filterItems"
+              @keyup.enter="filterItems"
+              @click:clear="() => {buscar = null, search()}"
               hide-details
               dense
               clearable
@@ -24,7 +27,11 @@
           </v-col>
         </template>
       </Header>
-      <DataTable :headersProp="headers" :dataProp="items" :colunmCustom="['acao']">
+      <DataTable
+        :headersProp="headers"
+        :dataProp="items"
+        :colunmCustom="['acao']"
+      >
         <template v-slot:acao="{ item }">
           <IconButton
             :onClick="() => navigateToEdit(item)"
@@ -72,12 +79,25 @@ export default {
   },
   beforeCreate() {},
   mounted() {
-    this.search()
+    this.search();
   },
   computed: {},
   methods: {
     search() {
-      this.items = getItem("perfis");
+      this.items = getItem(this.$keys.PERFIS);
+    },
+    filterItems() {
+      let filteredItems = [];
+      this.items = [];
+
+      filteredItems = getItem(this.$keys.PERFIS).filter((result) => {
+        return result.nome.toLowerCase().includes(this.buscar?.toLowerCase());
+      });
+      this.items = [...filteredItems];
+
+      if (!this.buscar) {
+        return this.search();
+      }
     },
     navigateToEdit(item) {
       return this.$router.push({
@@ -85,19 +105,18 @@ export default {
       });
     },
     async deleteItemTable(item) {
-      Swal.deleteMessage(
-        "Deseja excluir o perfil ",
-        `${item.nome}`
-      ).then(async (result) => {
-        if (result.isConfirmed) {
-          const resp = deleteItem("perfis", item.id);
-          if(resp.status == 200) {
-            this.search();
-            Swal.messageToast(this.$strings.msg_excluir);
+      Swal.deleteMessage("Deseja excluir o perfil ", `${item.nome}`).then(
+        async (result) => {
+          if (result.isConfirmed) {
+            const resp = deleteItem(this.$keys.PERFIS, item.id);
+            if (resp.status == 200) {
+              this.search();
+              Swal.messageToast(this.$strings.msg_excluir);
+            }
+            if (!resp) return false;
           }
-          if (!resp) return false;
         }
-      });
+      );
     },
   },
   watch: {},
