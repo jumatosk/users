@@ -21,19 +21,9 @@
               v-mask="'###.###.###-##'"
             />
           </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" sm="4" md="4">
-            <!-- <TextField
-              v-model="form.data_inicio"
-              :label="'Início'"
-              v-mask="'##/##/####'"
-            /> -->
-          </v-col>
-          <v-col cols="12" sm="4" md="4">
-            <!-- <TextField
-              v-model="form.data_fim"
-              :label="'Fim'"
-              v-mask="'##/##/####'"
-            /> -->
             <v-menu
               ref="menu"
               v-model="menu"
@@ -45,12 +35,13 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  v-model="form.data_inicio"
-                  label="Picker in menu"
+                  v-model="form.date_formated_inicio"
+                  label="Data início"
                   prepend-icon="mdi-calendar"
                   readonly
                   v-bind="attrs"
                   v-on="on"
+                  clearable
                 ></v-text-field>
               </template>
               <v-date-picker v-model="form.data_inicio" no-title scrollable>
@@ -58,7 +49,47 @@
                 <v-btn text color="primary" @click="menu = false">
                   Cancelar
                 </v-btn>
-                <v-btn text color="primary" @click="$refs.menu.save(form.data_inicio)">
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menu.save(form.data_inicio)"
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" sm="4" md="4">
+            <v-menu
+              ref="menu2"
+              v-model="menu2"
+              :close-on-content-click="false"
+              :return-value.sync="form.data_fim"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="form.date_formated_fim"
+                  label="Data fim"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  clearable
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="form.data_fim" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false">
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menu2.save(form.data_fim)"
+                >
                   OK
                 </v-btn>
               </v-date-picker>
@@ -145,6 +176,7 @@ export default {
       items: [],
       buscar: null,
       menu: false,
+      menu2: false,
     };
   },
   beforeCreate() {},
@@ -181,17 +213,18 @@ export default {
       );
     },
     filterItems() {
-      this.items = this.items.filter((resultado) => {
+      this.$forceUpdate();
+
+      this.items = getItem("usuarios").filter((resultado) => {
         return (
           resultado.nome
             .toLowerCase()
             .includes(this.form.nome?.toLowerCase()) ||
           resultado.cpf.includes(this.form.cpf) ||
-          moment(resultado.created_at).isSameOrAfter(this.form.data_inicio) ||
-          moment(resultado.created_at).isSameOrBefore(this.form.data_fim)
+          moment(resultado.created_at).isSame(this.form.data_inicio) ||
+          moment(resultado.created_at).isSameOrBefore(moment(this.form.data_fim))
         );
       });
-      this.$forceUpdate();
       if (
         !(
           this.form.nome ||
@@ -208,7 +241,21 @@ export default {
         this.form[i] = null;
       });
     },
+    formatDateBR(val) {
+      return moment(val).format("DD/MM/YYYY");
+    },
   },
-  watch: {},
+  watch: {
+    "form.data_inicio": {
+      handler(val) {
+        this.form.date_formated_inicio = this.formatDateBR(val);
+      },
+    },
+    "form.data_fim": {
+      handler(val) {
+        this.form.date_formated_fim = this.formatDateBR(val);
+      },
+    },
+  },
 };
 </script>

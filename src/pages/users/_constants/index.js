@@ -18,6 +18,8 @@ const formSearch = {
     cpf: null,
     data_inicio: null,
     data_fim: null,
+    date_formated_inicio: null,
+    date_formated_fim: null,
 };
 
 const breadcrumbsIndex = [{

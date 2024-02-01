@@ -230,7 +230,7 @@ export default {
     },
     getFormToSaveOrUpdate() {
       if (!this.$route.params.id) {
-        this.form.created_at = moment();
+        this.form.created_at = moment().format("YYYY-MM-DD");
       }
       const { id, nome, cpf, email, enderecos, perfil, created_at } = this.form;
       return { id, nome, cpf, email, enderecos, perfil, created_at };
