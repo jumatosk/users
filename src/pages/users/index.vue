@@ -100,7 +100,7 @@
               </v-date-picker>
             </v-menu>
           </v-col>
-          <v-row class="mt-6">
+          <v-row class="mt-4 mx-2">
             <IconButton
               :onClick="() => filterItems()"
               :name="'mdi-magnify'"

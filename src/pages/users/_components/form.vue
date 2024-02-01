@@ -34,7 +34,7 @@
               v-model="form.cpf"
               :label="'CPF'"
               v-mask="'###.###.###-##'"
-              :rules="required"
+              :rules="[required[0], cpf]"
               required
             />
           </v-col>
@@ -59,7 +59,7 @@
             />
           </v-col>
         </v-row>
-        <fieldset>
+        <fieldset class="pa-2">
           <legend>Endereços</legend>
           <v-row>
             <v-col cols="12" sm="6" md="6">
@@ -73,18 +73,32 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" sm="6" md="6">
-              <TextField
-                v-model="formTemp.endereco.logradouro"
-                :label="'Logradouro'"
-                :maxlength="255"
-              />
+            <v-col cols="12" sm="4" md="6">
+              <v-alert
+                colored-border
+                type="info"
+                style="font-size: 10pt"
+                border="right"
+                class="pl-1"
+                dense
+              >
+                Informe o cep para buscar o endereço.
+              </v-alert>
             </v-col>
+          </v-row>
+          <v-row>
             <v-col cols="12" sm="4" md="4">
               <TextField
                 v-model="formTemp.endereco.cep"
                 :label="'CEP'"
                 v-mask="'#####-###'"
+              />
+            </v-col>
+            <v-col cols="12" sm="6" md="6">
+              <TextField
+                v-model="formTemp.endereco.logradouro"
+                :label="'Logradouro'"
+                :maxlength="255"
               />
             </v-col>
             <v-col cols="12" sm="2" md="2">
@@ -126,6 +140,7 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from "vuex";
 import FormButton from "../../../components/ui/FormButton.vue";
 import Breadcrumbs from "../../../components/ui/Breadcrumbs.vue";
 import IconButton from "../../../components/ui/IconButton.vue";
@@ -137,6 +152,8 @@ import { create, setItemId, alreadyExist } from "../../../storage/create";
 import { getItemById, getItem as getItems } from "../../../storage/read";
 import { update } from "../../../storage/update";
 import moment from "moment";
+import { validarCPF } from "../../../utils/functions";
+import store from "../_store";
 
 export default {
   name: "usuarioForm",
@@ -156,19 +173,37 @@ export default {
       email: (v) => {
         return constants.regex.validEmail.test(v) || "E-mail inválido.";
       },
+      cpf: (v) => {
+        return validarCPF(v) || "CPF inválido.";
+      },
       form: { ...constants.form },
       formTemp: { ...constants.formTemp },
       breadcrumbs: [...constants.breadcrumbsForm],
       headers: [...constants.headersAdrress],
       itemsPerfis: [],
       itemsEnderecos: [],
+      addressModel: { ...constants.address },
     };
+  },
+  beforeCreate() {
+    const STORE = "$_users";
+
+    if (!(STORE in this.$store._modules.root._children))
+      this.$store.registerModule(STORE, store);
   },
   mounted() {
     this.itemsPerfis = getItems(this.$keys.PERFIS);
     this.itemsEnderecos = getItems(this.$keys.ENDERECOS);
   },
+  computed: {
+    ...mapGetters({
+      getItemAddress: "$_users/searchByCep",
+    }),
+  },
   methods: {
+    ...mapActions({
+      getAddress: "$_users/searchByCep",
+    }),
     async save() {
       this.formValidated = this.$refs.form.validate();
       if (!this.formValidated) {
@@ -272,6 +307,30 @@ export default {
         }
       },
       deep: true,
+    },
+    "formTemp.endereco.cep": {
+      async handler(cep) {
+        if (cep?.length == 9) {
+          let _cep = cep.replace("-", "");
+          await this.getAddress(cep);
+        }
+      },
+    },
+    getItemAddress(address) {
+      if (!address?.uf) {
+        let keys = Object.keys(this.addressModel);
+        keys.forEach((i) => {
+          this.addressModel[i] = null;
+        });
+        this.formTemp.endereco.logradouro = null;
+        Swal.messageToast(this.$strings.address_not_found, "error");
+      } else {
+        let keys = Object.keys(this.addressModel);
+        keys.forEach((i) => {
+          this.addressModel[i] = address[i];
+        });
+        this.formTemp.endereco.logradouro = `${address.logradouro}, ${address.bairro}, ${address.localidade} - ${address.uf}`;
+      }
     },
   },
 };

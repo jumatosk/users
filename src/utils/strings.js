@@ -21,6 +21,9 @@ const Strings = {
     icon_success: "success",
     icon_info: "infor",
     icon_error: "error",
+
+    //messages
+    address_not_found: "Endereço não encontrado."
 };
 
 export default Strings;
