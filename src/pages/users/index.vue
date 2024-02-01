@@ -34,14 +34,16 @@
               min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
+                <label>Data início</label>
                 <v-text-field
                   v-model="form.date_formated_inicio"
-                  label="Data início"
-                  prepend-icon="mdi-calendar"
+                  prepend-inner-icon="mdi-calendar"
                   readonly
                   v-bind="attrs"
                   v-on="on"
                   clearable
+                  outlined
+                  dense
                 ></v-text-field>
               </template>
               <v-date-picker v-model="form.data_inicio" no-title scrollable>
@@ -70,14 +72,17 @@
               min-width="auto"
             >
               <template v-slot:activator="{ on, attrs }">
+                <label>Data fim</label>
                 <v-text-field
                   v-model="form.date_formated_fim"
-                  label="Data fim"
-                  prepend-icon="mdi-calendar"
+                  prepend-inner-icon="mdi-calendar"
                   readonly
                   v-bind="attrs"
                   v-on="on"
                   clearable
+                  outlined
+                  dense
+                  ref="dataFim"
                 ></v-text-field>
               </template>
               <v-date-picker v-model="form.data_fim" no-title scrollable>
@@ -104,7 +109,8 @@
             <IconButton
               :onClick="
                 () => {
-                  search(), clearFields();
+                  clearFields(),
+                  search();
                 }
               "
               :name="'mdi-close-circle-outline'"
@@ -119,6 +125,7 @@
         :dataProp="items"
         :colunmCustom="['acao', 'created_at']"
       >
+        <template v-slot:no-data> <p>Dados não encontrados</p></template>
         <template v-slot:created_at="{ item }">
           {{ item.created_at | dateformat }}
         </template>
@@ -183,7 +190,8 @@ export default {
   mounted() {
     this.search();
   },
-  computed: {},
+  computed: {
+  },
   methods: {
     search() {
       this.items = getItem("usuarios");
@@ -213,18 +221,25 @@ export default {
       );
     },
     filterItems() {
-      this.$forceUpdate();
+      let filteredItems = [];
+      this.items = [];
 
-      this.items = getItem("usuarios").filter((resultado) => {
+      filteredItems = getItem("usuarios").filter((result) => {
         return (
-          resultado.nome
+          result.nome
             .toLowerCase()
             .includes(this.form.nome?.toLowerCase()) ||
-          resultado.cpf.includes(this.form.cpf) ||
-          moment(resultado.created_at).isSame(this.form.data_inicio) ||
-          moment(resultado.created_at).isSameOrBefore(moment(this.form.data_fim))
+            result.cpf.includes(this.form.cpf) ||
+          moment(result.created_at).isSame(this.form.data_inicio) ||
+          moment(result.created_at).isSame(this.form.data_fim) ||
+          moment(result.created_at).isBetween(
+            this.form.data_inicio,
+            this.form.data_fim
+          )
         );
       });
+      this.items = [...filteredItems];
+      this.$forceUpdate();
       if (
         !(
           this.form.nome ||
@@ -232,14 +247,15 @@ export default {
           this.form.data_inicio ||
           this.form.data_fim
         )
-      )
+      ) {
         return this.search();
+      }
     },
     clearFields() {
-      let keys = Object.keys(this.form);
-      keys.forEach((i) => {
-        this.form[i] = null;
-      });
+      this.form.nome = null;
+      this.form.cpf = null;
+      this.form.date_formated_fim = null;
+      this.form.date_formated_inicio = null;
     },
     formatDateBR(val) {
       return moment(val).format("DD/MM/YYYY");

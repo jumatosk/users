@@ -7,6 +7,7 @@ import store from "./store";
 
 import Strings from "./utils/strings";
 import Colors from "./utils/colors";
+import Keys from "./storage/keys";
 
 import VueSweetalert2 from "vue-sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -26,6 +27,7 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$strings = Strings;
 Vue.prototype.$colors = Colors;
+Vue.prototype.$keys = Keys;
 
 new Vue({
     vuetify,
