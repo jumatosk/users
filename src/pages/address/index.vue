@@ -77,7 +77,7 @@ export default {
   computed: {},
   methods: {
     search() {
-      this.items = getItem("enderecos");
+      this.items = getItem(this.$keys.ENDERECOS);
     },
     navigateToEdit(item) {
       return this.$router.push({
@@ -90,7 +90,7 @@ export default {
         `${item.logradouro}`
       ).then(async (result) => {
         if (result.isConfirmed) {
-          const resp = deleteItem("enderecos", item.id);
+          const resp = deleteItem(this.$keys.ENDERECOS, item.id);
           if(resp.status == 200) {
             this.search();
             Swal.messageToast(this.$strings.msg_excluir);

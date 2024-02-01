@@ -88,13 +88,13 @@ export default {
         this.$route.params.id) {
         this.form.id = Number(this.$route.params.id);
 
-        const response = update("enderecos", this.form);
+        const response = update(this.$keys.ENDERECOS, this.form);
         if (response.status == 200) {
-          this.$router.push({ name: "enderecos" });
+          this.$router.push({ name: this.$keys.ENDERECOS });
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
       } else if (
-        alreadyExist("enderecos", this.form.logradouro, "logradouro") &&
+        alreadyExist(this.$keys.ENDERECOS, this.form.logradouro, "logradouro") &&
         !this.$route.params.id
       ) {
         Swal.message(
@@ -104,11 +104,11 @@ export default {
         );
         return;
       } else {
-        this.form.id = setItemId("enderecos");
+        this.form.id = setItemId(this.$keys.ENDERECOS);
 
-        const response = create("enderecos", this.form);
+        const response = create(this.$keys.ENDERECOS, this.form);
         if (response.status == 201) {
-          this.$router.push({ name: "enderecos" });
+          this.$router.push({ name: this.$keys.ENDERECOS });
           Swal.messageToast(this.$strings.msg_adicionar, "success");
         }
       }
@@ -120,7 +120,7 @@ export default {
         if (val) {
           let keys = Object.keys(this.form);
           keys.forEach((i) => {
-            this.form[i] = getItemById("enderecos", val)[i];
+            this.form[i] = getItemById(this.$keys.ENDERECOS, val)[i];
           });
         }
       },

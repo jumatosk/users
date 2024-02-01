@@ -164,8 +164,8 @@ export default {
     };
   },
   mounted() {
-    this.itemsPerfis = getItems("perfis");
-    this.itemsEnderecos = getItems("enderecos");
+    this.itemsPerfis = getItems(this.$keys.PERFIS);
+    this.itemsEnderecos = getItems(this.$keys.ENDERECOS);
   },
   methods: {
     async save() {
@@ -179,12 +179,12 @@ export default {
       ) {
         this.form.id = Number(this.$route.params.id);
 
-        const response = update("usuarios", this.form);
+        const response = update(this.$keys.USUARIOS, this.form);
         if (response.status == 200) {
-          this.$router.push({ name: "usuarios" });
+          this.$router.push({ name: this.$keys.USUARIOS });
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
-      } else if (alreadyExist("usuarios", this.form.nome, "nome")&&
+      } else if (alreadyExist(this.$keys.USUARIOS, this.form.nome, "nome")&&
         !this.$route.params.id) {
         Swal.message(
           this.$strings.atencao,
@@ -193,23 +193,23 @@ export default {
         );
         return;
       } else {
-        this.form.id = setItemId("usuarios");
+        this.form.id = setItemId(this.$keys.USUARIOS);
 
         const _form = this.getFormToSaveOrUpdate();
 
-        const response = create("usuarios", _form);
+        const response = create(this.$keys.USUARIOS, _form);
         this.saveAddress(_form.enderecos);
 
         if (response.status == 201) {
-          this.$router.push({ name: "usuarios" });
+          this.$router.push({ name: this.$keys.USUARIOS });
           Swal.messageToast(this.$strings.msg_adicionar, "success");
         }
       }
     },
     saveAddress(enderecos) {
       enderecos.map((item) => {
-        if (!getItemById("enderecos", item.id)) {
-          create("enderecos", item);
+        if (!getItemById(this.$keys.ENDERECOS, item.id)) {
+          create(this.$keys.ENDERECOS, item);
         }
       });
     },
@@ -221,7 +221,7 @@ export default {
           this.$strings.icon_warning
         );
       if (!value.id) {
-        this.formTemp.endereco.id = setItemId("enderecos");
+        this.formTemp.endereco.id = setItemId(this.$keys.ENDERECOS);
       }
       this.form.enderecos.push({ ...value });
       setTimeout(() => {
@@ -257,7 +257,7 @@ export default {
         if (val) {
           let keys = Object.keys(this.form);
           keys.forEach((i) => {
-            this.form[i] = getItemById("usuarios", val)[i];
+            this.form[i] = getItemById(this.$keys.USUARIOS, val)[i];
           });
         }
       },

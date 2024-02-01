@@ -77,7 +77,7 @@ export default {
   computed: {},
   methods: {
     search() {
-      this.items = getItem("perfis");
+      this.items = getItem(this.$keys.PERFIS);
     },
     navigateToEdit(item) {
       return this.$router.push({
@@ -90,7 +90,7 @@ export default {
         `${item.nome}`
       ).then(async (result) => {
         if (result.isConfirmed) {
-          const resp = deleteItem("perfis", item.id);
+          const resp = deleteItem(this.$keys.PERFIS, item.id);
           if(resp.status == 200) {
             this.search();
             Swal.messageToast(this.$strings.msg_excluir);

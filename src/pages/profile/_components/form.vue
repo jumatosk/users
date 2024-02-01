@@ -77,13 +77,13 @@ export default {
       if (this.$route.params.id) {
         this.form.id = Number(this.$route.params.id);
 
-        const response = update("perfis", this.form);
+        const response = update(this.$keys.PERFIS, this.form);
         if (response.status == 200) {
-          this.$router.push({ name: "perfis" });
+          this.$router.push({ name: this.$keys.PERFIS });
           Swal.messageToast(this.$strings.msg_alterar, "success");
         }
       } else if (
-        alreadyExist("perfis", this.form.nome, "nome") &&
+        alreadyExist(this.$keys.PERFIS, this.form.nome, "nome") &&
         !this.$route.params.id
       ) {
         Swal.message(
@@ -93,11 +93,11 @@ export default {
         );
         return;
       } else {
-        this.form.id = setItemId("perfis");
+        this.form.id = setItemId(this.$keys.PERFIS);
 
-        const response = create("perfis", this.form);
+        const response = create(this.$keys.PERFIS, this.form);
         if (response.status == 201) {
-          this.$router.push({ name: "perfis" });
+          this.$router.push({ name: this.$keys.PERFIS });
           Swal.messageToast(this.$strings.msg_adicionar, "success");
         }
       }
@@ -109,7 +109,7 @@ export default {
         if (val) {
           let keys = Object.keys(this.form);
           keys.forEach((i) => {
-            this.form[i] = getItemById("perfis", val)[i];
+            this.form[i] = getItemById(this.$keys.PERFIS, val)[i];
           });
         }
       },

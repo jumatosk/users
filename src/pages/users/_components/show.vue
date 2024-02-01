@@ -86,7 +86,7 @@ export default {
     };
   },
   mounted() {
-    this.itemsPerfis = getItems("perfis");
+    this.itemsPerfis = getItems(this.$keys.PERFIS);
     this.headers.pop();
   },
   methods: {},
@@ -96,7 +96,7 @@ export default {
         if (val) {
           let keys = Object.keys(this.form);
           keys.forEach((i) => {
-            this.form[i] = getItemById("usuarios", val)[i];
+            this.form[i] = getItemById(this.$keys.USUARIOS, val)[i];
           });
         }
       },
